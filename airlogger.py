@@ -10,9 +10,14 @@ from pykoreaqi import AirKorea
 
 from time import sleep
 
-DB_FILE_NAME = 'air.db'
+import os
 
-engine = create_engine('sqlite:///%s'%DB_FILE_NAME, echo=False)
+DB_FILE_NAME = os.environ["DATABASE_URL"]
+
+#DB_FILE_NAME = 'air.db'
+
+#engine = create_engine('sqlite:///%s'%DB_FILE_NAME, echo=False)
+engine = create_engine(DB_FILE_NAME, echo=False)
 Base = declarative_base()
 
 class Station(Base):
