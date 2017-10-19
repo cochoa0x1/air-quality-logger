@@ -2,3 +2,21 @@
 
 
 ![alt text](./air.png "map") 
+
+
+### setup
+
+1. setup postgress docker
+```
+docker pull postgres
+```
+
+2. 
+```
+pip install -r requirements.txt
+```
+
+3. setup database
+```
+export DATABASE_URL=postgres://postgres:<???>@<???>/<???>
+```
