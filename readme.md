@@ -20,3 +20,11 @@ pip install -r requirements.txt
 ```
 export DATABASE_URL=postgres://postgres:<???>@<???>/<???>
 ```
+
+4. simple daemon
+ctrl+z -> bg
+```
+disown %1
+```
+
+or use nohup/screen/etc
