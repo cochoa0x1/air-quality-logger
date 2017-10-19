@@ -3,3 +3,4 @@
 **.ipynb-checkpoints
 **.DS_Store
 *.db
+*.private

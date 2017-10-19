@@ -1,1 +1,2 @@
+psycopg2
 git+https://github.com/cochoa0x1/pykoreaqi.git
