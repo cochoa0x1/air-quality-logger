@@ -11,6 +11,7 @@ from pykoreaqi import AirKorea
 from time import sleep
 
 import os
+import math
 
 DB_FILE_NAME = os.environ["DATABASE_URL"]
 
@@ -82,20 +83,29 @@ def add_to_database(row,Session):
     
     session.commit()
 
-
-
 while True:
-    print('getting data...')
-    aqi = AirKorea() #checkout kweather also
+    retry_factor = 1
+    base_dt = 30*60
+    retry_dt = 60
+    try:
+        print('getting data...')
+        aqi = AirKorea() #checkout kweather also
 
-    data = aqi.get_all_realtime(delay=1)
-    print('found %i stations'%len(data))
+        data = aqi.get_all_realtime(delay=1,metrics=['PM25'])
+        print('found %i stations'%len(data))
 
-    Session = sessionmaker(bind=engine)
+        Session = sessionmaker(bind=engine)
 
-    for x in data:
-        add_to_database(x,Session)
+        for x in data:
+            add_to_database(x,Session)
 
-    print('sleeping...')
-    sleep(60*60)
+        print('sleeping...')
+        retry_factor =1
+        sleep(base_dt)
+    except Exception as e:
+        print('something failed, waiting to retry')
+        retry_factor+=1 
+        sleep(math.pow(retry_dt,retry_factor))
+
+
 
