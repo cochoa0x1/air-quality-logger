@@ -12,6 +12,7 @@ from time import sleep
 
 import os
 import math
+from tqdm import tqdm
 
 DB_FILE_NAME = os.environ["DATABASE_URL"]
 
@@ -85,7 +86,7 @@ def add_to_database(row,Session):
 
 while True:
     retry_factor = 1
-    base_dt = 30*60
+    base_dt = 60*60
     retry_dt = 60
     try:
         print('getting data...')
@@ -96,7 +97,7 @@ while True:
 
         Session = sessionmaker(bind=engine)
 
-        for x in data:
+        for x in tqdm(data):
             add_to_database(x,Session)
 
         print('sleeping...')
