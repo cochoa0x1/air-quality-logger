@@ -54,21 +54,25 @@ try:
 except:
     print('tables aleady exist?')
 
+STATION_CACHE={}
 
-
-def add_to_database(row,Session):
+def add_to_database(row,session):
     
-    session = Session()
     
     #first check if our station is already added (assuming unique name/address)
     name, address = row['STATION_NAME'], row['STATION_ADDR']
     
-    station = session.query(Station).filter(Station.name == name).filter(Station.address == address).first()
-    
-    if station is None:
-        station = Station(name=name, address = address, lat = x['DM_X'], long = x['DM_Y'])
-        session.add(station)
+    if name not in STATION_CACHE:
+        station = session.query(Station).filter(Station.name == name).filter(Station.address == address).first()
+
+        if station is None:
+            station = Station(name=name, address = address, lat = x['DM_X'], long = x['DM_Y'])
+            session.add(station)
+
+        STATION_CACHE[name] = station
         
+    station = STATION_CACHE[name]
+
     #now go through the measurements
     for m in row['MEASUREMENT']:
         
@@ -81,12 +85,11 @@ def add_to_database(row,Session):
         t = datetime.datetime.strptime(m['DATA_TIME'],'%Y년 %m월 %d일 %H시')
         
         station.measurements.append(Measurement(metric=m['METRIC'], t =t, value=value ))
-    
-    session.commit()
+
 
 while True:
     retry_factor = 1
-    base_dt = 60*60
+    base_dt =60*60
     retry_dt = 60
     try:
         print('getting data...')
@@ -96,9 +99,16 @@ while True:
         print('found %i stations'%len(data))
 
         Session = sessionmaker(bind=engine)
+        session = Session()
+    
 
         for x in tqdm(data):
-            add_to_database(x,Session)
+            add_to_database(x,session)
+
+
+        session.commit()
+
+
 
         print('sleeping...')
         retry_factor =1
