@@ -28,11 +28,13 @@ retry_factor = 1
 base_dt =60*60
 retry_dt = 60
 
+headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'}
+
 while True:
 	
 	try:
 		print('getting data...')
-		aqi = AirKorea() #checkout kweather also
+		aqi = AirKorea(headers=headers) #checkout kweather also
 
 		data = aqi.get_all_realtime(delay=1,metrics=['PM25'])
 		print('found %i stations'%len(data))
