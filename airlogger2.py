@@ -1,3 +1,4 @@
+from __future__ import print_function
 import os
 import psycopg2
 import datetime
@@ -63,5 +64,6 @@ while True:
 		sleep(base_dt)
 	except Exception as e:
 		print('something failed, waiting to retry')
+		print(e)
 		retry_factor+=1 
 		sleep(math.pow(retry_dt,retry_factor))
